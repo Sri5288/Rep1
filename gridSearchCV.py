@@ -19,7 +19,6 @@ numerical_cols = ['year', 'age', 'bmi', 'hbA1c_level', 'blood_glucose_level']
 # Define preprocessing for numerical columns (scale them)
 numeric_transformer = Pipeline(steps=[
     ('scaler', StandardScaler())])
-
 # Define preprocessing for categorical columns (encode them)
 categorical_transformer = Pipeline(steps=[
     ('onehot', OneHotEncoder(handle_unknown='ignore'))])
@@ -61,12 +60,10 @@ for model_name, model in models.items():
     # Create a pipeline with the preprocessor and the model
     pipeline = Pipeline(steps=[('preprocessor', preprocessor),
                                ('classifier', model)])
-    
     # Perform Grid Search CV
     grid_search = GridSearchCV(pipeline, params[model_name], cv=5, scoring='roc_auc', n_jobs=-1)
     grid_search.fit(X_train, y_train)
-    
-    # Get the best model and score
+   # Get the best model and score
     if grid_search.best_score_ > best_score:
         best_model = grid_search.best_estimator_
         best_params = grid_search.best_params_
