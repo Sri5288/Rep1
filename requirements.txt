@@ -1,4 +1,4 @@
-scikit-learn
 numpy
-flake8
-pytest
+pandas
+joblib
+scikit-learn
