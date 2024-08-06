@@ -3,7 +3,7 @@ name: Build and Test Docker Image
 on:
   push:
     branches:
-      - main  # Trigger on push to the main branch
+      - main
 
 jobs:
   build:
@@ -23,12 +23,12 @@ jobs:
     - name: Run Docker container
       run: |
         docker run -d -p 5000:5000 --name myflaskapp myimage:latest
-        sleep 10  # Give the container some time to start
+        sleep 30  # Increased sleep time
 
     - name: Test Flask Application
       run: |
         curl -X POST "http://localhost:5000/predict" -H "Content-Type: application/json" -d '{"features": [1,2,3]}' | grep "prediction"
-      
+
     - name: Stop Docker container
       run: |
         docker stop myflaskapp
