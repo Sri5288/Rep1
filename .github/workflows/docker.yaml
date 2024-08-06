@@ -1,23 +1,35 @@
-name: Build and Run Docker Container
+name: Build and Test Docker Image
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to the main branch
 
 jobs:
-  build-and-run:
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Build Docker image
-      run: docker build -t myimage:latest .
+      run: |
+        docker build -t myimage:latest -f Dockerfile.flask .
 
     - name: Run Docker container
-      run: docker run myimage:latest
+      run: |
+        docker run -d -p 5000:5000 --name myflaskapp myimage:latest
+        sleep 10  # Give the container some time to start
+
+    - name: Test Flask Application
+      run: |
+        curl -X POST "http://localhost:5000/predict" -H "Content-Type: application/json" -d '{"features": [1,2,3]}' | grep "prediction"
+      
+    - name: Stop Docker container
+      run: |
+        docker stop myflaskapp
+        docker rm myflaskapp
