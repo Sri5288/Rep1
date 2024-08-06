@@ -1,4 +1,2 @@
-numpy
-pandas
+Flask
 joblib
-scikit-learn
